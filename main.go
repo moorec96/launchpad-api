@@ -1,13 +1,14 @@
 package main
 
 import (
-	"Routes"
-	"fmt"
-	"log"
+	"launchpad-api/api"
+	"launchpad-api/services"
 	"net/http"
 )
 
 func main() {
-	Routes.HandleRoutes()
-	http.ListenAndServe(":8000", router)
+
+	api.HandleRoutes()
+	services.InitiateDatabase()
+	http.ListenAndServe(":8080", nil)
 }
