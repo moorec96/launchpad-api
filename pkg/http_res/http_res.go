@@ -24,7 +24,7 @@ func GenerateHttpResponse(code int, messages ...interface{}) *HttpResponse {
 }
 
 func SendHttpResponse(writer http.ResponseWriter, res *HttpResponse) {
-	if res.StatusCode < 300 {
+	if res.StatusCode >= 300 {
 		sendHttpErrorWithError(writer, res.StatusCode, res.Messages...)
 	} else {
 		var okMessage interface{} = ""

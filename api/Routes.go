@@ -2,7 +2,7 @@ package api
 
 import (
 	"github.com/gorilla/mux"
-	employee "launchpad-api/api/employee"
+	"launchpad-api/api/employee"
 	"launchpad-api/pkg/http_res"
 	"net/http"
 )
