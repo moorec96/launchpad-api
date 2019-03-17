@@ -4,6 +4,7 @@ import (
 	"github.com/gorilla/mux"
 	"launchpad-api/api/department"
 	"launchpad-api/api/employee"
+	"launchpad-api/api/inventory"
 	"launchpad-api/pkg/http_res"
 	"net/http"
 )
@@ -19,6 +20,9 @@ var endpoints = []Endpoint{
 	{"/employees/{emp_id}", employee.HandleEmployee, []string{"GET", "POST"}},
 	{"/departments", department.HandleAllDepartments, []string{"GET", "PUT"}},
 	{"/departments/{dnum}", department.HandleDepartment, []string{"GET", "POST"}},
+	{"/inventory", inventory.HandleAllInventory, []string{"GET", "PUT"}},
+	{"/inventory/{part_id}", inventory.HandleInventoryPart, []string{"GET", "POST"}},
+	{"/Maintenance", }
 }
 
 func HandleRoutes() {
@@ -58,7 +62,7 @@ func mapEndpoints(writer http.ResponseWriter, req *http.Request, endpoint Endpoi
 
 //Rockets
 //router.HandleFunc("/{companyId}/rockets", HandleAllRockets).Methods("GET", "PUT")
-//router.HandleFunc("/{companyId}/rockets/{rocketId}", HandleRocket).Methods("GET", "POST")
+//router.Handle,Func("/{companyId}/rockets/{rocketId}", HandleRocket).Methods("GET", "POST")
 
 //Launches
 //router.HandleFunc("/{companyId}/launch", HandleAllLaunches).Methods("GET", "PUT")

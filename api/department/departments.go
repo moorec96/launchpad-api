@@ -43,7 +43,8 @@ func HandleDepartment(writer http.ResponseWriter, req *http.Request) *http_res.H
 func GetDepartments(writer http.ResponseWriter) *http_res.HttpResponse {
 	rows, err := services.Db.Query("Select * From Department")
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Bad Input"))
 	}
 	rowsStruct := Rows(rows)
 	return http_res.GenerateHttpResponse(http.StatusOK, *rowsStruct)
@@ -64,23 +65,28 @@ func AddDepartment(writer http.ResponseWriter, req *http.Request) *http_res.Http
 	reqMap := util.RequestBodyAsMap(req)
 	dnum := (*reqMap)["dnum"].(string)
 	dname := (*reqMap)["dname"].(string)
-	created_at := (*reqMap)["created_at"].(string)
 	head := (*reqMap)["head"].(string)
 	if util.ValidateDepartmentID(dnum) {
 		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("That department num is already taken"))
+	}
+	if !util.ValidateString(dname) {
+		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Bad Input"))
 	}
 	if !util.ValidateEmployeeID(head) {
 		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("That head emp_id does not exist"))
 	}
 	newDep := DepartmentStruct{
-		Dnum:       &dnum,
-		Dname:      &dname,
-		Created_At: &created_at,
-		Head:       &head,
+		Dnum:  &dnum,
+		Dname: &dname,
+		Head:  &head,
 	}
 
-	stmt, _ := services.Db.Prepare("Insert into Department values(?, ?, ?, ?)")
-	_, _ = stmt.Exec(dnum, dname, created_at, head)
+	stmt, _ := services.Db.Prepare("Insert into Department (dnum,dname,head) values(?, ?, ?)")
+	_, err := stmt.Exec(dnum, dname, head)
+	if err != nil {
+		log.Print(err)
+		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Bad Input"))
+	}
 	return http_res.GenerateHttpResponse(http.StatusOK, newDep)
 }
 
@@ -94,7 +100,8 @@ func UpdateDepartment(writer http.ResponseWriter, req *http.Request) *http_res.H
 	vars := mux.Vars(req)
 	err := util.UpdateTable("department", (vars["dnum"]), "dnum", *reqMap)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Bad Input"))
 	}
 	return http_res.GenerateHttpResponse(http.StatusOK, "Successful Update")
 }

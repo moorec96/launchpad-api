@@ -49,11 +49,12 @@ func GetAllEmployees(writer http.ResponseWriter) *http_res.HttpResponse {
 	rows, err := services.Db.Query("Select * From Employee")
 	//var fname string
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Bad Input"))
 	}
 
-	rowStruct := Rows(rows)
-	return http_res.GenerateHttpResponse(http.StatusOK, *rowStruct)
+	rowsStruct := Rows(rows)
+	return http_res.GenerateHttpResponse(http.StatusOK, *rowsStruct)
 }
 
 func GetEmployee(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
@@ -81,24 +82,31 @@ func AddEmployee(writer http.ResponseWriter, req *http.Request) *http_res.HttpRe
 	lname := (*reqMap)["lname"].(string)
 	address := (*reqMap)["address"].(string)
 	dep_id := (*reqMap)["dep_id"].(string)
-	created_at := (*reqMap)["created_at"].(string)
 	title := (*reqMap)["title"].(string)
 	salary, _ := (*reqMap)["salary"].(int)
 
 	newEmp := EmployeeStruct{
-		Emp_ID:     &emp_id,
-		Fname:      &fname,
-		Mname:      &mname,
-		Lname:      &lname,
-		Address:    &address,
-		Dep_ID:     &dep_id,
-		Created_At: &created_at,
-		Title:      &title,
-		Salary:     &salary,
+		Emp_ID:  &emp_id,
+		Fname:   &fname,
+		Mname:   &mname,
+		Lname:   &lname,
+		Address: &address,
+		Dep_ID:  &dep_id,
+		Title:   &title,
+		Salary:  &salary,
 	}
 
-	stmt, _ := services.Db.Prepare("Insert into Employee values(?, ?, ?, ?, ?, ?, ?, ?, ?)")
-	_, _ = stmt.Exec(emp_id, fname, mname, lname, address, dep_id, created_at, title, salary)
+	if !util.ValidateUpdate(*reqMap, "employee") {
+		fmt.Println("Bad input")
+		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Input is invalid"))
+	}
+
+	stmt, _ := services.Db.Prepare("Insert into Employee (emp_id,fname,mname,lname,address,dep_id,title,salary) values(?, ?, ?, ?, ?, ?, ?, ?)")
+	_, err := stmt.Exec(emp_id, fname, mname, lname, address, dep_id, title, salary)
+	if err != nil {
+		log.Print(err)
+		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Bad Input"))
+	}
 	return http_res.GenerateHttpResponse(http.StatusOK, newEmp)
 }
 
@@ -106,13 +114,14 @@ func UpdateEmployee(writer http.ResponseWriter, req *http.Request) *http_res.Htt
 	reqMap := util.RequestBodyAsMap(req)
 	if !util.ValidateUpdate(*reqMap, "employee") {
 		fmt.Println("Bad input")
-		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Input is invalid"))
+		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Bad Input"))
 	}
 
 	vars := mux.Vars(req)
 	err := util.UpdateTable("employee", (vars["emp_id"]), "emp_id", *reqMap)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Bad Input"))
 	}
 	return http_res.GenerateHttpResponse(http.StatusOK, "Successful Update")
 }
