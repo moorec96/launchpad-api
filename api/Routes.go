@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/gorilla/mux"
+	"launchpad-api/api/department"
 	"launchpad-api/api/employee"
 	"launchpad-api/pkg/http_res"
 	"net/http"
@@ -14,7 +15,10 @@ type Endpoint struct {
 }
 
 var endpoints = []Endpoint{
-	{"/{companyId}/employees", employee.HandleAllEmployees, []string{"GET", "PUT"}},
+	{"/employees", employee.HandleAllEmployees, []string{"GET", "PUT"}},
+	{"/employees/{emp_id}", employee.HandleEmployee, []string{"GET", "POST"}},
+	{"/departments", department.HandleAllDepartments, []string{"GET", "PUT"}},
+	{"/departments/{dnum}", department.HandleDepartment, []string{"GET", "POST"}},
 }
 
 func HandleRoutes() {
@@ -43,12 +47,6 @@ func mapEndpoints(writer http.ResponseWriter, req *http.Request, endpoint Endpoi
 
 //func HandleRoutes() {
 //	router := mux.NewRouter()
-//Company
-//router.HandleFunc("/{companyId}", HandleCompanyData).Methods("GET", "POST")
-
-//Employees
-//router.HandleFunc("/{companyId}/employees", HandleAllEmployees).Methods("GET", "PUT")
-//router.HandleFunc("/{companyId}/employees/{employeeId}", HandleEmployee).Methods("GET", "POST")
 
 //Departments
 //router.HandleFunc("/{companyId}/departments", HandleAllDepartments).Methods("GET", "PUT")

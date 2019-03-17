@@ -1,7 +1,9 @@
 package employee
 
 import (
+	"errors"
 	"fmt"
+	"github.com/gorilla/mux"
 	"launchpad-api/pkg/http_res"
 	"launchpad-api/pkg/util"
 	"launchpad-api/services"
@@ -16,7 +18,7 @@ type EmployeeStruct struct {
 	Lname      *string `json:"lname"`
 	Address    *string `json:"address"`
 	Dep_ID     *string `json:"dep_id"`
-	Created_At *string `json:"date"`
+	Created_At *string `json:"created_at"`
 	Title      *string `json:"title"`
 	Salary     *int    `json:"salary"`
 }
@@ -32,6 +34,17 @@ func HandleAllEmployees(writer http.ResponseWriter, req *http.Request) *http_res
 	return res
 }
 
+func HandleEmployee(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
+	var res *http_res.HttpResponse
+	switch req.Method {
+	case "GET":
+		res = GetEmployee(writer, req)
+	case "POST":
+		res = UpdateEmployee(writer, req)
+	}
+	return res
+}
+
 func GetAllEmployees(writer http.ResponseWriter) *http_res.HttpResponse {
 	rows, err := services.Db.Query("Select * From Employee")
 	//var fname string
@@ -43,10 +56,26 @@ func GetAllEmployees(writer http.ResponseWriter) *http_res.HttpResponse {
 	return http_res.GenerateHttpResponse(http.StatusOK, *rowStruct)
 }
 
+func GetEmployee(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
+	vars := mux.Vars(req)
+	user := (vars["emp_id"])
+	row := services.Db.QueryRow("Select * From Employee Where emp_id = ?", user)
+	rowStruct := Row(row)
+	if rowStruct.Emp_ID == nil {
+		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("No employee exists with that ID"))
+	}
+	return http_res.GenerateHttpResponse(http.StatusOK, *rowStruct)
+}
+
 func AddEmployee(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	reqMap := util.RequestBodyAsMap(req)
-	fmt.Print(*reqMap)
-	emp_id := "1000"
+
+	//Loop through random emp_id until one is not taken
+	var emp_id string
+	for ok := true; ok; ok = util.ValidateEmployeeID(emp_id) {
+		emp_id = util.GenerateRandomString(9)
+	}
+
 	fname := (*reqMap)["fname"].(string)
 	mname := (*reqMap)["mname"].(string)
 	lname := (*reqMap)["lname"].(string)
@@ -71,4 +100,19 @@ func AddEmployee(writer http.ResponseWriter, req *http.Request) *http_res.HttpRe
 	stmt, _ := services.Db.Prepare("Insert into Employee values(?, ?, ?, ?, ?, ?, ?, ?, ?)")
 	_, _ = stmt.Exec(emp_id, fname, mname, lname, address, dep_id, created_at, title, salary)
 	return http_res.GenerateHttpResponse(http.StatusOK, newEmp)
+}
+
+func UpdateEmployee(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
+	reqMap := util.RequestBodyAsMap(req)
+	if !util.ValidateUpdate(*reqMap, "employee") {
+		fmt.Println("Bad input")
+		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Input is invalid"))
+	}
+
+	vars := mux.Vars(req)
+	err := util.UpdateTable("employee", (vars["emp_id"]), "emp_id", *reqMap)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return http_res.GenerateHttpResponse(http.StatusOK, "Successful Update")
 }

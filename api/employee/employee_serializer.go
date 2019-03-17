@@ -15,3 +15,11 @@ func Rows(rows *sql.Rows) *[]EmployeeStruct {
 	}
 	return &output
 }
+
+func Row(row *sql.Row) *EmployeeStruct {
+	var employeeRow EmployeeStruct
+	_ = row.Scan(&employeeRow.Emp_ID, &employeeRow.Fname, &employeeRow.Mname,
+		&employeeRow.Lname, &employeeRow.Address, &employeeRow.Dep_ID,
+		&employeeRow.Created_At, &employeeRow.Title, &employeeRow.Salary)
+	return &employeeRow
+}

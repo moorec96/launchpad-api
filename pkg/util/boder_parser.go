@@ -15,7 +15,6 @@ func RequestBodyAsMap(req *http.Request) *map[string]interface{} {
 		fmt.Println(reqBody)
 		return &reqBody
 	} else {
-		fmt.Println("TESTTTINGG")
 		emptyMap := &map[string]interface{}{}
 		return emptyMap
 	}
