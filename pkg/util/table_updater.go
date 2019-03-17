@@ -34,7 +34,8 @@ func UpdateTable(table string, id string, idType string, newValues map[string]in
 	fmt.Println(updateQuery)
 	stmt, err := services.Db.Prepare(updateQuery)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return err
 	}
 	_, err = stmt.Exec(updateValues...)
 	return err

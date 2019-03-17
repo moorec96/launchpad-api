@@ -47,7 +47,6 @@ func HandleEmployee(writer http.ResponseWriter, req *http.Request) *http_res.Htt
 
 func GetAllEmployees(writer http.ResponseWriter) *http_res.HttpResponse {
 	rows, err := services.Db.Query("Select * From Employee")
-	//var fname string
 	if err != nil {
 		log.Print(err)
 		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Bad Input"))
@@ -75,6 +74,28 @@ func AddEmployee(writer http.ResponseWriter, req *http.Request) *http_res.HttpRe
 	var emp_id string
 	for ok := true; ok; ok = util.ValidateEmployeeID(emp_id) {
 		emp_id = util.GenerateRandomString(9)
+	}
+
+	if _, ok := (*reqMap)["fname"]; !ok {
+		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Bad Input"))
+	}
+	if _, ok := (*reqMap)["mname"]; !ok {
+		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Bad Input"))
+	}
+	if _, ok := (*reqMap)["lname"]; !ok {
+		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Bad Input"))
+	}
+	if _, ok := (*reqMap)["address"]; !ok {
+		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Bad Input"))
+	}
+	if _, ok := (*reqMap)["dep_id"]; !ok {
+		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Bad Input"))
+	}
+	if _, ok := (*reqMap)["title"]; !ok {
+		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Bad Input"))
+	}
+	if _, ok := (*reqMap)["salary"]; !ok {
+		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Bad Input"))
 	}
 
 	fname := (*reqMap)["fname"].(string)

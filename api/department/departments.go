@@ -63,6 +63,15 @@ func GetDepartment(writer http.ResponseWriter, req *http.Request) *http_res.Http
 
 func AddDepartment(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	reqMap := util.RequestBodyAsMap(req)
+	if _, ok := (*reqMap)["dnum"]; !ok {
+		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Bad Input"))
+	}
+	if _, ok := (*reqMap)["dname"]; !ok {
+		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Bad Input"))
+	}
+	if _, ok := (*reqMap)["head"]; !ok {
+		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Bad Input"))
+	}
 	dnum := (*reqMap)["dnum"].(string)
 	dname := (*reqMap)["dname"].(string)
 	head := (*reqMap)["head"].(string)

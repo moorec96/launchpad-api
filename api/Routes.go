@@ -5,6 +5,9 @@ import (
 	"launchpad-api/api/department"
 	"launchpad-api/api/employee"
 	"launchpad-api/api/inventory"
+	"launchpad-api/api/maintenance"
+	"launchpad-api/api/rocket"
+	"launchpad-api/api/rocket_launch"
 	"launchpad-api/pkg/http_res"
 	"net/http"
 )
@@ -22,7 +25,12 @@ var endpoints = []Endpoint{
 	{"/departments/{dnum}", department.HandleDepartment, []string{"GET", "POST"}},
 	{"/inventory", inventory.HandleAllInventory, []string{"GET", "PUT"}},
 	{"/inventory/{part_id}", inventory.HandleInventoryPart, []string{"GET", "POST"}},
-	{"/Maintenance", }
+	{"/maintenance", maintenance.HandleAllMaintenances, []string{"GET", "PUT"}},
+	{"/maintenance/{maint_id}", maintenance.HandleMaintenance, []string{"GET", "POST"}},
+	{"/rocket", rocket.HandleAllRockets, []string{"GET", "PUT"}},
+	{"/rocket/{r_id}", rocket.HandleRocket, []string{"GET", "POST"}},
+	{"/rocket_launch", rocket_launch.HandleAllRocketLaunches, []string{"GET", "PUT"}},
+	{"/rocket_launch/{launch_id}", rocket_launch.HandleRocketLaunch, []string{"GET", "POST"}},
 }
 
 func HandleRoutes() {

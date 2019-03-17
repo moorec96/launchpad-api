@@ -64,6 +64,16 @@ func GetInventoryPart(writer http.ResponseWriter, req *http.Request) *http_res.H
 func AddPart(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	reqMap := util.RequestBodyAsMap(req)
 
+	if _, ok := (*reqMap)["part_id"]; !ok {
+		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Bad Input"))
+	}
+	if _, ok := (*reqMap)["quantity"]; !ok {
+		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Bad Input"))
+	}
+	if _, ok := (*reqMap)["location"]; !ok {
+		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Bad Input"))
+	}
+
 	part_id := (*reqMap)["part_id"].(string)
 	quantity := (*reqMap)["quantity"].(float64)
 	location := (*reqMap)["location"].(string)

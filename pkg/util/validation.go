@@ -31,6 +31,26 @@ var inventoryValidationMethods = map[string]interface{}{
 	"location":   ValidateString,
 }
 
+var maintenanceValidationMethods = map[string]interface{}{
+	"maint_id":   preventChange,
+	"emp_no":     ValidateEmployeeID,
+	"created_at": preventChange,
+}
+
+var rocketValidationMethods = map[string]interface{}{
+	"r_id":       preventChange,
+	"rname":      ValidateString,
+	"last_maint": ValidateMaintenanceID,
+}
+
+var rocketLaunchValidationMethods = map[string]interface{}{
+	"launch_id": preventChange,
+	"rocket_id": ValidateRocketID,
+	"rlname":    ValidateString,
+	"launcher":  ValidateEmployeeID,
+	"location":  ValidateString,
+}
+
 func ValidateUpdate(newValues map[string]interface{}, table string) bool {
 	validationMethods := getValidationMethods(table)
 	for key, value := range newValues {
@@ -73,6 +93,19 @@ func ValidateEmployeeID(val interface{}) bool {
 	return false
 }
 
+func ValidateMaintenanceID(val interface{}) bool {
+	valStr := val.(string)
+	rows, err := services.Db.Query("Select * From Maintenance Where maint_id = ?", valStr)
+	if err != nil {
+		return false
+	}
+	if rows.Next() {
+		rows.Close()
+		return true
+	}
+	return false
+}
+
 func ValidateDepartmentID(val interface{}) bool {
 	valStr := val.(string)
 	rows, err := services.Db.Query("Select * From Department Where dnum = ?", valStr)
@@ -99,6 +132,32 @@ func ValidatePartID(val interface{}) bool {
 	return false
 }
 
+func ValidateRocketID(val interface{}) bool {
+	valStr := val.(string)
+	rows, err := services.Db.Query("Select * From Rocket Where R_ID = ?", valStr)
+	if err != nil {
+		return false
+	}
+	if rows.Next() {
+		rows.Close()
+		return true
+	}
+	return false
+}
+
+func ValidateLaunchID(val interface{}) bool {
+	valStr := val.(string)
+	rows, err := services.Db.Query("Select * From Rocket_Launch Where Launch_ID = ?", valStr)
+	if err != nil {
+		return false
+	}
+	if rows.Next() {
+		rows.Close()
+		return true
+	}
+	return false
+}
+
 func preventChange(val interface{}) bool {
 	return false
 }
@@ -111,6 +170,12 @@ func getValidationMethods(table string) map[string]interface{} {
 		return departmentValidationMethods
 	case "inventory":
 		return inventoryValidationMethods
+	case "maintenance":
+		return maintenanceValidationMethods
+	case "rocket":
+		return rocketValidationMethods
+	case "rocket_launch":
+		return rocketLaunchValidationMethods
 	}
 	return nil
 }
