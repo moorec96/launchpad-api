@@ -58,6 +58,7 @@ var partValidationMethods = map[string]interface{}{
 	"pname": ValidateString,
 }
 
+//Take in all columns to be updated and ensure updates are good
 func ValidateUpdate(newValues map[string]interface{}, table string) bool {
 	validationMethods := getValidationMethods(table)
 	for key, value := range newValues {
@@ -71,6 +72,7 @@ func ValidateUpdate(newValues map[string]interface{}, table string) bool {
 	return true
 }
 
+//String can not be empty, or over 255 in length
 func ValidateString(val interface{}) bool {
 	valStr := val.(string)
 	if len(valStr) < 0 || len(valStr) > 255 {
@@ -79,6 +81,7 @@ func ValidateString(val interface{}) bool {
 	return true
 }
 
+//int cannot be below 0
 func ValidateInt(val interface{}) bool {
 	salary := val.(float64)
 	if salary < 0 {
@@ -87,6 +90,7 @@ func ValidateInt(val interface{}) bool {
 	return true
 }
 
+//Ensure emp_ID exists
 func ValidateEmployeeID(val interface{}) bool {
 	valStr := val.(string)
 	rows, err := services.Db.Query("Select * From Employee Where emp_id = ?", valStr)
@@ -100,6 +104,7 @@ func ValidateEmployeeID(val interface{}) bool {
 	return false
 }
 
+//Ensure Maiint_ID exists
 func ValidateMaintenanceID(val interface{}) bool {
 	valStr := val.(string)
 	rows, err := services.Db.Query("Select * From Maintenance Where maint_id = ?", valStr)
@@ -113,6 +118,7 @@ func ValidateMaintenanceID(val interface{}) bool {
 	return false
 }
 
+//Ensure Dep_ID exists
 func ValidateDepartmentID(val interface{}) bool {
 	valStr := val.(string)
 	rows, err := services.Db.Query("Select * From Department Where dnum = ?", valStr)
@@ -126,6 +132,7 @@ func ValidateDepartmentID(val interface{}) bool {
 	return false
 }
 
+//Ensure Pnum exists
 func ValidatePartID(val interface{}) bool {
 	valStr := val.(string)
 	rows, err := services.Db.Query("Select * From Part Where Pnum = ?", valStr)
@@ -139,6 +146,7 @@ func ValidatePartID(val interface{}) bool {
 	return false
 }
 
+//Ensure R_ID Exists
 func ValidateRocketID(val interface{}) bool {
 	valStr := val.(string)
 	rows, err := services.Db.Query("Select * From Rocket Where R_ID = ?", valStr)
@@ -152,6 +160,7 @@ func ValidateRocketID(val interface{}) bool {
 	return false
 }
 
+//Ensure Launch_ID exists
 func ValidateLaunchID(val interface{}) bool {
 	valStr := val.(string)
 	rows, err := services.Db.Query("Select * From Rocket_Launch Where Launch_ID = ?", valStr)
@@ -165,10 +174,12 @@ func ValidateLaunchID(val interface{}) bool {
 	return false
 }
 
+//Any attribute that should not be changed  i.e. IDs 
 func preventChange(val interface{}) bool {
 	return false
 }
 
+//Determines which map of validation methods should be called
 func getValidationMethods(table string) map[string]interface{} {
 	switch table {
 	case "employee":

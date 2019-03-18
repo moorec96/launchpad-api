@@ -18,6 +18,7 @@ type RocketStruct struct {
 	Created_At *string `json:"created_at"`
 }
 
+//Routes http request to correct method
 func HandleAllRockets(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	var res *http_res.HttpResponse
 	switch req.Method {
@@ -29,6 +30,7 @@ func HandleAllRockets(writer http.ResponseWriter, req *http.Request) *http_res.H
 	return res
 }
 
+//Routes http request to correct method
 func HandleRocket(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	var res *http_res.HttpResponse
 	switch req.Method {
@@ -42,6 +44,7 @@ func HandleRocket(writer http.ResponseWriter, req *http.Request) *http_res.HttpR
 	return res
 }
 
+//Get all rows in Rockets table
 func GetAllRockets(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	rows, err := services.Db.Query("Select * From Rocket")
 	if err != nil {
@@ -53,6 +56,7 @@ func GetAllRockets(writer http.ResponseWriter, req *http.Request) *http_res.Http
 	return http_res.GenerateHttpResponse(http.StatusOK, *rowsStruct)
 }
 
+//Get a specific row in Rocket table
 func GetRocket(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	vars := mux.Vars(req)
 	rocket := (vars["r_id"])
@@ -64,6 +68,7 @@ func GetRocket(writer http.ResponseWriter, req *http.Request) *http_res.HttpResp
 	return http_res.GenerateHttpResponse(http.StatusOK, *rowStruct)
 }
 
+//Add a rocket to the Rockets table
 func AddRocket(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 
 	reqMap := util.RequestBodyAsMap(req)
@@ -97,6 +102,7 @@ func AddRocket(writer http.ResponseWriter, req *http.Request) *http_res.HttpResp
 	return http_res.GenerateHttpResponse(http.StatusOK, newRocket)
 }
 
+//Take in various attributes and update them in a specific row of  Rockets table 
 func UpdateRocket(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	reqMap := util.RequestBodyAsMap(req)
 	if !util.ValidateUpdate(*reqMap, "rocket") {
@@ -113,6 +119,7 @@ func UpdateRocket(writer http.ResponseWriter, req *http.Request) *http_res.HttpR
 	return http_res.GenerateHttpResponse(http.StatusOK, "Successful Update")
 }
 
+//Delete a specific row of Rocket table
 func DeleteRocket(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	vars := mux.Vars(req)
 	user := (vars["r_id"])

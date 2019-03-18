@@ -25,6 +25,7 @@ func ToJson(mp map[string]interface{}) string {
 	return json
 }
 
+//Takes in map of values to update, and makes sql update query
 func UpdateTable(table string, id string, idType string, newValues map[string]interface{}) error {
 	updateSets, updateValues := getUpdateSets(newValues)
 	updateValues = append(updateValues, id)

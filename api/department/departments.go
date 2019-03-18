@@ -18,6 +18,7 @@ type DepartmentStruct struct {
 	Head       *string `json:"head"`
 }
 
+//Routes http request to correct method
 func HandleAllDepartments(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	var res *http_res.HttpResponse
 	switch req.Method {
@@ -29,6 +30,7 @@ func HandleAllDepartments(writer http.ResponseWriter, req *http.Request) *http_r
 	return res
 }
 
+//Routes http request to correct method
 func HandleDepartment(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	var res *http_res.HttpResponse
 	switch req.Method {
@@ -42,6 +44,7 @@ func HandleDepartment(writer http.ResponseWriter, req *http.Request) *http_res.H
 	return res
 }
 
+//Get all rows in Department table
 func GetDepartments(writer http.ResponseWriter) *http_res.HttpResponse {
 	rows, err := services.Db.Query("Select * From Department")
 	if err != nil {
@@ -52,6 +55,7 @@ func GetDepartments(writer http.ResponseWriter) *http_res.HttpResponse {
 	return http_res.GenerateHttpResponse(http.StatusOK, *rowsStruct)
 }
 
+//Get a specific row in Department table
 func GetDepartment(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	vars := mux.Vars(req)
 	user := (vars["dnum"])
@@ -63,6 +67,7 @@ func GetDepartment(writer http.ResponseWriter, req *http.Request) *http_res.Http
 	return http_res.GenerateHttpResponse(http.StatusOK, *rowStruct)
 }
 
+//Add a department to department table
 func AddDepartment(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	reqMap := util.RequestBodyAsMap(req)
 	if _, ok := (*reqMap)["dnum"]; !ok {
@@ -101,6 +106,7 @@ func AddDepartment(writer http.ResponseWriter, req *http.Request) *http_res.Http
 	return http_res.GenerateHttpResponse(http.StatusOK, newDep)
 }
 
+//Take in various attributes and update them in a specific row of  Department table 
 func UpdateDepartment(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	reqMap := util.RequestBodyAsMap(req)
 	if !util.ValidateUpdate(*reqMap, "department") {
@@ -117,6 +123,7 @@ func UpdateDepartment(writer http.ResponseWriter, req *http.Request) *http_res.H
 	return http_res.GenerateHttpResponse(http.StatusOK, "Successful Update")
 }
 
+//Delete a specific row of Department table
 func DeleteDepartment(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	vars := mux.Vars(req)
 	user := (vars["dnum"])

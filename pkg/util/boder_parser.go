@@ -7,6 +7,7 @@ import (
 	"net/http"
 )
 
+//Take in POST and PUT requests, and convert their bodies to a map and return it
 func RequestBodyAsMap(req *http.Request) *map[string]interface{} {
 	body, _ := ioutil.ReadAll(req.Body)
 	var reqBody map[string]interface{}

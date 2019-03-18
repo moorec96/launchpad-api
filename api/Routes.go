@@ -36,6 +36,7 @@ var endpoints = []Endpoint{
 	{"/part/{pnum}", part.HandlePart, []string{"GET", "POST", "DELETE"}},
 }
 
+//Take in all routes and map them to their specific endpoint functions
 func HandleRoutes() {
 	r := mux.NewRouter()
 
@@ -59,33 +60,3 @@ func mapEndpoints(writer http.ResponseWriter, req *http.Request, endpoint Endpoi
 	}
 	http_res.SendHttpResponse(writer, res)
 }
-
-//func HandleRoutes() {
-//	router := mux.NewRouter()
-
-//Departments
-//router.HandleFunc("/{companyId}/departments", HandleAllDepartments).Methods("GET", "PUT")
-//router.HandleFunc("/{companyId}/departments/{departmentId}", HandleDepartment).Methods("GET", "POST")
-
-//Maintenance
-//router.HandleFunc("/{companyId}/maintenance", HandleAllMaintenanceRecords).Methods("GET", "PUT")
-//router.HandleFunc("/{companyId}/maintenance/{maintenanceId}", HandleMaintenanceRecord).Methods("GET", "POST")
-
-//Rockets
-//router.HandleFunc("/{companyId}/rockets", HandleAllRockets).Methods("GET", "PUT")
-//router.Handle,Func("/{companyId}/rockets/{rocketId}", HandleRocket).Methods("GET", "POST")
-
-//Launches
-//router.HandleFunc("/{companyId}/launch", HandleAllLaunches).Methods("GET", "PUT")
-//router.HandleFunc("/{companyId}/launch/{launchId}", HandleLaunch).Methods("GET", "POST")
-
-//Inventory
-//router.HandleFunc("/{companyId}/inventory", HandleAllInventory).Methods("GET", "POST")
-
-//Parts
-//router.HandleFunc("/{companyId}/inventory/{partId}", HandlePart).Methods("GET", "POST")
-//router.HandleFunc("/{companyId}/rockets/{rocketId}/parts", HandleRocketParts).Methods("GET", "PUT")
-
-//	http.Handle("/", router)
-
-//}

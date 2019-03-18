@@ -20,6 +20,7 @@ type RocketLaunchStruct struct {
 	Created_At *string `json:"created_at"`
 }
 
+//Routes http request to correct method
 func HandleAllRocketLaunches(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	var res *http_res.HttpResponse
 	switch req.Method {
@@ -31,6 +32,7 @@ func HandleAllRocketLaunches(writer http.ResponseWriter, req *http.Request) *htt
 	return res
 }
 
+//Routes http request to correct method
 func HandleRocketLaunch(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	var res *http_res.HttpResponse
 	switch req.Method {
@@ -44,6 +46,7 @@ func HandleRocketLaunch(writer http.ResponseWriter, req *http.Request) *http_res
 	return res
 }
 
+//Get all rows in Rocket_launch table
 func GetAllRocketLaunches(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	rows, err := services.Db.Query("Select * From Rocket_Launch")
 	if err != nil {
@@ -55,6 +58,7 @@ func GetAllRocketLaunches(writer http.ResponseWriter, req *http.Request) *http_r
 	return http_res.GenerateHttpResponse(http.StatusOK, *rowsStruct)
 }
 
+//Get a specific row in Rockets_launch table
 func GetRocketLaunch(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	vars := mux.Vars(req)
 	rocket := (vars["launch_id"])
@@ -66,6 +70,7 @@ func GetRocketLaunch(writer http.ResponseWriter, req *http.Request) *http_res.Ht
 	return http_res.GenerateHttpResponse(http.StatusOK, *rowStruct)
 }
 
+//Add a  launch to the Rocket_Launch table
 func AddRocketLaunch(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 
 	reqMap := util.RequestBodyAsMap(req)
@@ -113,6 +118,7 @@ func AddRocketLaunch(writer http.ResponseWriter, req *http.Request) *http_res.Ht
 	return http_res.GenerateHttpResponse(http.StatusOK, newLaunch)
 }
 
+//Take in various attributes and update them in a specific row of  Rocket_Launch table 
 func UpdateLaunch(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	reqMap := util.RequestBodyAsMap(req)
 	if !util.ValidateUpdate(*reqMap, "rocket_launch") {
@@ -129,6 +135,7 @@ func UpdateLaunch(writer http.ResponseWriter, req *http.Request) *http_res.HttpR
 	return http_res.GenerateHttpResponse(http.StatusOK, "Successful Update")
 }
 
+//Delete a specific row of  Rocket_Launch table
 func DeleteRocketLaunch(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	vars := mux.Vars(req)
 	user := (vars["launch_id"])

@@ -17,6 +17,7 @@ type MaintenanceStruct struct {
 	Created_at *string `json:"created_at"`
 }
 
+//Routes http request to correct method
 func HandleAllMaintenances(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	var res *http_res.HttpResponse
 	switch req.Method {
@@ -28,6 +29,7 @@ func HandleAllMaintenances(writer http.ResponseWriter, req *http.Request) *http_
 	return res
 }
 
+//Routes http request to correct method
 func HandleMaintenance(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	var res *http_res.HttpResponse
 	switch req.Method {
@@ -41,6 +43,7 @@ func HandleMaintenance(writer http.ResponseWriter, req *http.Request) *http_res.
 	return res
 }
 
+//Get all rows in Maintenance table
 func GetAllMaintenance(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	rows, err := services.Db.Query("Select * From Maintenance")
 	if err != nil {
@@ -52,6 +55,7 @@ func GetAllMaintenance(writer http.ResponseWriter, req *http.Request) *http_res.
 	return http_res.GenerateHttpResponse(http.StatusOK, *rowsStruct)
 }
 
+//Get a specific row in Maintenance table
 func GetMaintenance(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	vars := mux.Vars(req)
 	maint := (vars["maint_id"])
@@ -63,6 +67,7 @@ func GetMaintenance(writer http.ResponseWriter, req *http.Request) *http_res.Htt
 	return http_res.GenerateHttpResponse(http.StatusOK, *rowStruct)
 }
 
+//Add a maintenance record into Maintenance table
 func AddMaintenance(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	reqMap := util.RequestBodyAsMap(req)
 
@@ -91,6 +96,7 @@ func AddMaintenance(writer http.ResponseWriter, req *http.Request) *http_res.Htt
 	return http_res.GenerateHttpResponse(http.StatusOK, newMaint)
 }
 
+//Take in various attributes and update them in a specific row of  Maintenance table 
 func UpdateMaintenance(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	reqMap := util.RequestBodyAsMap(req)
 	if !util.ValidateUpdate(*reqMap, "maintenance") {
@@ -107,6 +113,7 @@ func UpdateMaintenance(writer http.ResponseWriter, req *http.Request) *http_res.
 	return http_res.GenerateHttpResponse(http.StatusOK, "Successful Update")
 }
 
+//Delete a specific row of Maintenance table
 func DeleteMaintenance(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	vars := mux.Vars(req)
 	user := (vars["maint_id"])

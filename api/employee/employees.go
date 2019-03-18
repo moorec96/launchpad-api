@@ -23,6 +23,7 @@ type EmployeeStruct struct {
 	Salary     *int    `json:"salary"`
 }
 
+//Routes http request to correct method
 func HandleAllEmployees(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	var res *http_res.HttpResponse
 	switch req.Method {
@@ -34,6 +35,7 @@ func HandleAllEmployees(writer http.ResponseWriter, req *http.Request) *http_res
 	return res
 }
 
+//Routes http request to correct method
 func HandleEmployee(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	var res *http_res.HttpResponse
 	switch req.Method {
@@ -47,6 +49,7 @@ func HandleEmployee(writer http.ResponseWriter, req *http.Request) *http_res.Htt
 	return res
 }
 
+//Get all rows in Employee table
 func GetAllEmployees(writer http.ResponseWriter) *http_res.HttpResponse {
 	rows, err := services.Db.Query("Select * From Employee")
 	if err != nil {
@@ -58,6 +61,7 @@ func GetAllEmployees(writer http.ResponseWriter) *http_res.HttpResponse {
 	return http_res.GenerateHttpResponse(http.StatusOK, *rowsStruct)
 }
 
+//Get a specific row in Employee table
 func GetEmployee(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	vars := mux.Vars(req)
 	user := (vars["emp_id"])
@@ -69,10 +73,10 @@ func GetEmployee(writer http.ResponseWriter, req *http.Request) *http_res.HttpRe
 	return http_res.GenerateHttpResponse(http.StatusOK, *rowStruct)
 }
 
+//Add a employee to  Employee table
 func AddEmployee(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	reqMap := util.RequestBodyAsMap(req)
 
-	//Loop through random emp_id until one is not taken
 	var emp_id string
 	for ok := true; ok; ok = util.ValidateEmployeeID(emp_id) {
 		emp_id = util.GenerateRandomString(9)
@@ -133,6 +137,7 @@ func AddEmployee(writer http.ResponseWriter, req *http.Request) *http_res.HttpRe
 	return http_res.GenerateHttpResponse(http.StatusOK, newEmp)
 }
 
+//Take in various attributes and update them in a specific row of  Employee table 
 func UpdateEmployee(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	reqMap := util.RequestBodyAsMap(req)
 	if !util.ValidateUpdate(*reqMap, "employee") {
@@ -149,6 +154,7 @@ func UpdateEmployee(writer http.ResponseWriter, req *http.Request) *http_res.Htt
 	return http_res.GenerateHttpResponse(http.StatusOK, "Successful Update")
 }
 
+//Delete a specific row of Employee table
 func DeleteEmployee(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	vars := mux.Vars(req)
 	user := (vars["emp_id"])

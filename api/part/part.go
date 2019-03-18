@@ -16,6 +16,7 @@ type PartStruct struct {
 	Pname *string `json:"pname"`
 }
 
+//Routes http request to correct method
 func HandleAllParts(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	var res *http_res.HttpResponse
 	switch req.Method {
@@ -27,6 +28,7 @@ func HandleAllParts(writer http.ResponseWriter, req *http.Request) *http_res.Htt
 	return res
 }
 
+//Routes http request to correct method
 func HandlePart(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	var res *http_res.HttpResponse
 	switch req.Method {
@@ -40,6 +42,7 @@ func HandlePart(writer http.ResponseWriter, req *http.Request) *http_res.HttpRes
 	return res
 }
 
+//Get all rows in Parts table
 func GetAllParts(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	rows, err := services.Db.Query("Select * From Part")
 	if err != nil {
@@ -61,6 +64,7 @@ func GetPart(writer http.ResponseWriter, req *http.Request) *http_res.HttpRespon
 	return http_res.GenerateHttpResponse(http.StatusOK, *rowStruct)
 }
 
+//Get a specific row in Parts table
 func AddPart(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 
 	reqMap := util.RequestBodyAsMap(req)
@@ -94,6 +98,7 @@ func AddPart(writer http.ResponseWriter, req *http.Request) *http_res.HttpRespon
 	return http_res.GenerateHttpResponse(http.StatusOK, newPart)
 }
 
+//Take in various attributes and update them in a specific row of  Parts table 
 func UpdatePart(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	reqMap := util.RequestBodyAsMap(req)
 	if !util.ValidateUpdate(*reqMap, "part") {
@@ -110,6 +115,7 @@ func UpdatePart(writer http.ResponseWriter, req *http.Request) *http_res.HttpRes
 	return http_res.GenerateHttpResponse(http.StatusOK, "Successful Update")
 }
 
+//Delete a specific row of Parts table
 func DeletePart(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	vars := mux.Vars(req)
 	user := (vars["pnum"])

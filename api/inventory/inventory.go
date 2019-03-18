@@ -18,6 +18,7 @@ type InventoryStruct struct {
 	Location   *string  `json:"location"`
 }
 
+//Routes http request to correct method
 func HandleAllInventory(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	var res *http_res.HttpResponse
 	switch req.Method {
@@ -29,6 +30,7 @@ func HandleAllInventory(writer http.ResponseWriter, req *http.Request) *http_res
 	return res
 }
 
+//Routes http request to correct method
 func HandleInventoryPart(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	var res *http_res.HttpResponse
 	switch req.Method {
@@ -42,6 +44,7 @@ func HandleInventoryPart(writer http.ResponseWriter, req *http.Request) *http_re
 	return res
 }
 
+//Get all rows in Inventory table
 func GetAllInventory(writer http.ResponseWriter) *http_res.HttpResponse {
 	rows, err := services.Db.Query("Select * From Inventory")
 	if err != nil {
@@ -52,6 +55,7 @@ func GetAllInventory(writer http.ResponseWriter) *http_res.HttpResponse {
 	return http_res.GenerateHttpResponse(http.StatusOK, *rowsStruct)
 }
 
+//Get a specific row in Inventory table
 func GetInventoryPart(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	vars := mux.Vars(req)
 	part := (vars["part_id"])
@@ -63,6 +67,7 @@ func GetInventoryPart(writer http.ResponseWriter, req *http.Request) *http_res.H
 	return http_res.GenerateHttpResponse(http.StatusOK, *rowStruct)
 }
 
+//Add a Part to Inventory Table
 func AddPart(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	reqMap := util.RequestBodyAsMap(req)
 
@@ -108,6 +113,7 @@ func AddPart(writer http.ResponseWriter, req *http.Request) *http_res.HttpRespon
 	return http_res.GenerateHttpResponse(http.StatusOK, newInv)
 }
 
+//Take in various attributes and update them in a specific row of  Inventory table 
 func UpdatePart(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	reqMap := util.RequestBodyAsMap(req)
 	if !util.ValidateUpdate(*reqMap, "inventory") {
@@ -124,6 +130,7 @@ func UpdatePart(writer http.ResponseWriter, req *http.Request) *http_res.HttpRes
 	return http_res.GenerateHttpResponse(http.StatusOK, "Successful Update")
 }
 
+//Delete a specific row of Inventory table
 func DeleteInventoryItem(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
 	vars := mux.Vars(req)
 	user := (vars["part_id"])

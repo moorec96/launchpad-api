@@ -4,6 +4,7 @@ import (
 	"database/sql"
 )
 
+//Takes in return value of a sql query, and places it into an array of structs
 func Rows(rows *sql.Rows) *[]EmployeeStruct {
 	output := make([]EmployeeStruct, 0)
 	for rows.Next() {
@@ -16,6 +17,7 @@ func Rows(rows *sql.Rows) *[]EmployeeStruct {
 	return &output
 }
 
+//Takes in return value of a sql query, and places it into an array of structs. Used for single row queries
 func Row(row *sql.Row) *EmployeeStruct {
 	var employeeRow EmployeeStruct
 	_ = row.Scan(&employeeRow.Emp_ID, &employeeRow.Fname, &employeeRow.Mname,

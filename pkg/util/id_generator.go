@@ -3,7 +3,7 @@ package util
 import (
 	"crypto/rand"
 )
-
+//Used to generate various table IDs
 func GenerateRandomString(length int) string {
 	b := make([]byte, length)
 	rand.Read(b)
