@@ -15,6 +15,7 @@ type RocketStruct struct {
 	R_ID       *string `json:"r_id"`
 	Rname      *string `json:"rname"`
 	Last_Maint *string `json:"last_maint"`
+	Created_At *string `json:"created_at"`
 }
 
 func HandleAllRockets(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
@@ -35,6 +36,8 @@ func HandleRocket(writer http.ResponseWriter, req *http.Request) *http_res.HttpR
 		res = GetRocket(writer, req)
 	case "POST":
 		res = UpdateRocket(writer, req)
+	case "DELETE":
+		res = DeleteRocket(writer, req)
 	}
 	return res
 }
@@ -74,7 +77,7 @@ func AddRocket(writer http.ResponseWriter, req *http.Request) *http_res.HttpResp
 		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Bad Input"))
 	}
 	rname := (*reqMap)["rname"].(string)
-	newEmp := RocketStruct{
+	newRocket := RocketStruct{
 		R_ID:       &r_id,
 		Rname:      &rname,
 		Last_Maint: nil,
@@ -91,7 +94,7 @@ func AddRocket(writer http.ResponseWriter, req *http.Request) *http_res.HttpResp
 		log.Print(err)
 		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Bad Input"))
 	}
-	return http_res.GenerateHttpResponse(http.StatusOK, newEmp)
+	return http_res.GenerateHttpResponse(http.StatusOK, newRocket)
 }
 
 func UpdateRocket(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
@@ -108,4 +111,15 @@ func UpdateRocket(writer http.ResponseWriter, req *http.Request) *http_res.HttpR
 		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Badder Input"))
 	}
 	return http_res.GenerateHttpResponse(http.StatusOK, "Successful Update")
+}
+
+func DeleteRocket(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
+	vars := mux.Vars(req)
+	user := (vars["r_id"])
+	row := services.Db.QueryRow("Delete From Rocket Where r_id = ?", user)
+	rowStruct := Row(row)
+	if rowStruct.R_ID == nil {
+		return http_res.GenerateHttpResponse(http.StatusOK, errors.New("Rocket has been deleted"))
+	}
+	return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Something went wrong"))
 }

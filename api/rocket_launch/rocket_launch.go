@@ -12,11 +12,12 @@ import (
 )
 
 type RocketLaunchStruct struct {
-	Launch_ID *string `json:"launch_id"`
-	Rocket_ID *string `json:"rocket_id"`
-	RLname    *string `json:"rlname"`
-	Launcher  *string `json:"launcher"`
-	Location  *string `json:"location"`
+	Launch_ID  *string `json:"launch_id"`
+	Rocket_ID  *string `json:"rocket_id"`
+	RLname     *string `json:"rlname"`
+	Launcher   *string `json:"launcher"`
+	Location   *string `json:"location"`
+	Created_At *string `json:"created_at"`
 }
 
 func HandleAllRocketLaunches(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
@@ -37,6 +38,8 @@ func HandleRocketLaunch(writer http.ResponseWriter, req *http.Request) *http_res
 		res = GetRocketLaunch(writer, req)
 	case "POST":
 		res = UpdateLaunch(writer, req)
+	case "DELETE":
+		res = DeleteRocketLaunch(writer, req)
 	}
 	return res
 }
@@ -124,4 +127,15 @@ func UpdateLaunch(writer http.ResponseWriter, req *http.Request) *http_res.HttpR
 		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Badder Input"))
 	}
 	return http_res.GenerateHttpResponse(http.StatusOK, "Successful Update")
+}
+
+func DeleteRocketLaunch(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
+	vars := mux.Vars(req)
+	user := (vars["launch_id"])
+	row := services.Db.QueryRow("Delete From Rocket_Launch Where launch_id = ?", user)
+	rowStruct := Row(row)
+	if rowStruct.Launch_ID == nil {
+		return http_res.GenerateHttpResponse(http.StatusOK, errors.New("Launch has been deleted"))
+	}
+	return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Something went wrong"))
 }

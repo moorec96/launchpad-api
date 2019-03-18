@@ -41,14 +41,21 @@ var rocketValidationMethods = map[string]interface{}{
 	"r_id":       preventChange,
 	"rname":      ValidateString,
 	"last_maint": ValidateMaintenanceID,
+	"created_at": preventChange,
 }
 
 var rocketLaunchValidationMethods = map[string]interface{}{
-	"launch_id": preventChange,
-	"rocket_id": ValidateRocketID,
-	"rlname":    ValidateString,
-	"launcher":  ValidateEmployeeID,
-	"location":  ValidateString,
+	"launch_id":  preventChange,
+	"rocket_id":  ValidateRocketID,
+	"rlname":     ValidateString,
+	"launcher":   ValidateEmployeeID,
+	"location":   ValidateString,
+	"created_at": preventChange,
+}
+
+var partValidationMethods = map[string]interface{}{
+	"pnum":  preventChange,
+	"pname": ValidateString,
 }
 
 func ValidateUpdate(newValues map[string]interface{}, table string) bool {
@@ -176,6 +183,8 @@ func getValidationMethods(table string) map[string]interface{} {
 		return rocketValidationMethods
 	case "rocket_launch":
 		return rocketLaunchValidationMethods
+	case "part":
+		return partValidationMethods
 	}
 	return nil
 }

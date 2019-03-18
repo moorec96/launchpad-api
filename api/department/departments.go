@@ -36,6 +36,8 @@ func HandleDepartment(writer http.ResponseWriter, req *http.Request) *http_res.H
 		res = GetDepartment(writer, req)
 	case "POST":
 		res = UpdateDepartment(writer, req)
+	case "DELETE":
+		res = DeleteDepartment(writer, req)
 	}
 	return res
 }
@@ -113,4 +115,15 @@ func UpdateDepartment(writer http.ResponseWriter, req *http.Request) *http_res.H
 		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Bad Input"))
 	}
 	return http_res.GenerateHttpResponse(http.StatusOK, "Successful Update")
+}
+
+func DeleteDepartment(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
+	vars := mux.Vars(req)
+	user := (vars["dnum"])
+	row := services.Db.QueryRow("Delete From Department Where dnum = ?", user)
+	rowStruct := Row(row)
+	if rowStruct.Dnum == nil {
+		return http_res.GenerateHttpResponse(http.StatusOK, errors.New("Department has been deleted"))
+	}
+	return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Something went wrong"))
 }

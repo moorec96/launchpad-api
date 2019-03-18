@@ -36,6 +36,8 @@ func HandleInventoryPart(writer http.ResponseWriter, req *http.Request) *http_re
 		res = GetInventoryPart(writer, req)
 	case "POST":
 		res = UpdatePart(writer, req)
+	case "DELETE":
+		res = DeleteInventoryItem(writer, req)
 	}
 	return res
 }
@@ -120,4 +122,15 @@ func UpdatePart(writer http.ResponseWriter, req *http.Request) *http_res.HttpRes
 		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Badder Input"))
 	}
 	return http_res.GenerateHttpResponse(http.StatusOK, "Successful Update")
+}
+
+func DeleteInventoryItem(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
+	vars := mux.Vars(req)
+	user := (vars["part_id"])
+	row := services.Db.QueryRow("Delete From Inventory Where part_id = ?", user)
+	rowStruct := Row(row)
+	if rowStruct.Part_ID == nil {
+		return http_res.GenerateHttpResponse(http.StatusOK, errors.New("Part has been deleted"))
+	}
+	return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Something went wrong"))
 }

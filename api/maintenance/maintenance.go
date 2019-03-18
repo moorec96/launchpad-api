@@ -35,6 +35,8 @@ func HandleMaintenance(writer http.ResponseWriter, req *http.Request) *http_res.
 		res = GetMaintenance(writer, req)
 	case "POST":
 		res = UpdateMaintenance(writer, req)
+	case "DELETE":
+		res = DeleteMaintenance(writer, req)
 	}
 	return res
 }
@@ -103,4 +105,15 @@ func UpdateMaintenance(writer http.ResponseWriter, req *http.Request) *http_res.
 		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Badder Input"))
 	}
 	return http_res.GenerateHttpResponse(http.StatusOK, "Successful Update")
+}
+
+func DeleteMaintenance(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
+	vars := mux.Vars(req)
+	user := (vars["maint_id"])
+	row := services.Db.QueryRow("Delete From Maintenance Where maint_id = ?", user)
+	rowStruct := Row(row)
+	if rowStruct.Maint_ID == nil {
+		return http_res.GenerateHttpResponse(http.StatusOK, errors.New("Maintenance has been deleted"))
+	}
+	return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Something went wrong"))
 }

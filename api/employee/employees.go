@@ -41,6 +41,8 @@ func HandleEmployee(writer http.ResponseWriter, req *http.Request) *http_res.Htt
 		res = GetEmployee(writer, req)
 	case "POST":
 		res = UpdateEmployee(writer, req)
+	case "DELETE":
+		res = DeleteEmployee(writer, req)
 	}
 	return res
 }
@@ -145,4 +147,15 @@ func UpdateEmployee(writer http.ResponseWriter, req *http.Request) *http_res.Htt
 		return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Bad Input"))
 	}
 	return http_res.GenerateHttpResponse(http.StatusOK, "Successful Update")
+}
+
+func DeleteEmployee(writer http.ResponseWriter, req *http.Request) *http_res.HttpResponse {
+	vars := mux.Vars(req)
+	user := (vars["emp_id"])
+	row := services.Db.QueryRow("Delete From Employee Where emp_id = ?", user)
+	rowStruct := Row(row)
+	if rowStruct.Emp_ID == nil {
+		return http_res.GenerateHttpResponse(http.StatusOK, errors.New("Employee has been deleted"))
+	}
+	return http_res.GenerateHttpResponse(http.StatusBadRequest, errors.New("Something went wrong"))
 }
